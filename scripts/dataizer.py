@@ -1,4 +1,30 @@
-import json
+import json, time
+from geopy import geocoders
+
+class LocalLoc:
+  def __init__(self):
+    self.coder = geocoders.Nominatim()
+    try:
+      self.cache = json.load(open('../data/loc.cache.json'))
+    except:
+      self.cache = {}
+
+  def code(self, loc):
+    if loc in self.cache:
+      return self.cache[loc]
+    else:
+      l = None
+      try:
+        l = self.coder.geocode(loc)
+      except:
+        time.sleep(1)
+      if l != None:
+        self.cache[loc] = l[1]
+      else:
+        self.cache[loc] = []
+
+  def __del__(self):
+    json.dump(self.cache, open('../data/loc.cache.json', 'w'))
 
 def getUfo(line):
   try:
@@ -10,8 +36,9 @@ ufos = [getUfo(line) for line in open('../data/ufo_awesome.json')]
 empty = sum([1 if rec == {} else 0 for rec in ufos])
 print "Total of ", empty, " errors reading ", len(ufos), " records."
 
-def metaDataize(record):
-  return record['location']
+def metaDataize(coder, record):
+  return [coder.code(record['location'])]
 
-metadata = [metaDataize(record) for record in ufos if record != {}]
+coder = LocalLoc()
+metadata = [metaDataize(coder, record) for record in ufos if record != {}]
 json.dump(metadata, open('../data/ufo_metadata.json', 'w'))
