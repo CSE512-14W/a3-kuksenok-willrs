@@ -1,11 +1,14 @@
-<!-- A choropleth example by Mike Bostock.  Originally from http://bl.ocks.org/mbostock/4060606-->
-
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
 
+body {
+  background: black;
+}
+
 .counties {
   fill: none;
+  stroke: #333;
 }
 
 .states {
@@ -26,7 +29,6 @@
 
 </style>
 <body>
-Acknowledgement:  This "Choropleth" example is originally from Mike Bostock's work at http://bl.ocks.org/mbostock/4060606.
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -49,7 +51,7 @@ var svg = d3.select("body").append("svg")
 
 queue()
     .defer(d3.json, "us.json")
-    .defer(d3.tsv, "unemployment.tsv", function(d) { rateById.set(d.id, +d.rate); })
+//    .defer(d3.tsv, "unemployment.tsv", function(d) { rateById.set(d.id, +d.rate); })
     .await(ready);
 
 function ready(error, us) {
@@ -58,7 +60,7 @@ function ready(error, us) {
     .selectAll("path")
       .data(topojson.feature(us, us.objects.counties).features)
     .enter().append("path")
-      .attr("class", function(d) { return quantize(rateById.get(d.id)); })
+//      .attr("class", function(d) { return quantize(rateById.get(d.id)); })
       .attr("d", path);
 
   svg.append("path")
