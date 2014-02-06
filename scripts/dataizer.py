@@ -4,12 +4,17 @@ from geopy import geocoders
 class LocalLoc:
   def __init__(self):
     self.coder = geocoders.Nominatim()
+    self.calls = 0;
     try:
       self.cache = json.load(open('../data/loc.cache.json'))
     except:
       self.cache = {}
+    print "GeoLoc Cache has ", len(self.cache)
 
   def code(self, loc):
+    self.calls += 1
+    if self.calls % 1000 == 0:
+      print ".",
     if loc in self.cache:
       return self.cache[loc]
     else:
