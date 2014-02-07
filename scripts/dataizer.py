@@ -5,17 +5,19 @@ class LocalLoc:
   def __init__(self):
     self.coder = geocoders.Nominatim()
     self.calls = 0;
+    self.good = 0;
     try:
       self.cache = json.load(open('../data/loc.cache.json'))
     except:
       self.cache = {}
-    print "GeoLoc Cache has ", len(self.cache)
 
   def code(self, loc):
     self.calls += 1
     if self.calls % 1000 == 0:
       print ".",
     if loc in self.cache:
+      if self.cache[loc] != []:
+        self.good += 1
       return self.cache[loc]
     else:
       l = None
@@ -47,3 +49,5 @@ def metaDataize(coder, record):
 coder = LocalLoc()
 metadata = [metaDataize(coder, record) for record in ufos if record != {}]
 json.dump(metadata, open('../data/ufo_metadata.json', 'w'))
+
+print coder.good, " of ", coder.calls, " items geolocated."
