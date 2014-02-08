@@ -7,24 +7,6 @@ body {
   background: black;
 }
 
-.counties {
-  fill: none;
-  stroke: #333;
-}
-
-.states {
-  fill: none;
-  stroke: #fff;
-  stroke-linejoin: round;
-}
-
-.d3-slider-vertical.timeslide {
-  display: inline-block;
-  height: 500px;
-  border: 0px;
-  background: #333;
-}
-
 .q0-9 { fill:rgb(247,251,255); }
 .q1-9 { fill:rgb(222,235,247); }
 .q2-9 { fill:rgb(198,219,239); }
@@ -41,50 +23,18 @@ body {
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
-<script src="scripts/d3.slider.js"></script>
+<script src="scripts/datamap.js"></script>
 <script>
 
 var width = 960,
-    height = 500;
+    height = 500,
+    map;
 
-var containerSize = function() {
-  return height;
-};
-
-var rateById = d3.map();
-
-var quantize = d3.scale.quantize()
-    .domain([0, .15])
-    .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
-
-var path = d3.geo.path();
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-var slider = d3.select("body").append("div")
-    .attr("class", "timeslide")
-    .attr("height", height)
-    .call(d3.slider().value( [10, 30] ).orientation("vertical"));
-
-queue()
-    .defer(d3.json, "us.json")
-    .await(ready);
-
-function ready(error, us) {
-  svg.append("g")
-      .attr("class", "counties")
-    .selectAll("path")
-      .data(topojson.feature(us, us.objects.counties).features)
-    .enter().append("path")
-      .attr("d", path);
-
-  svg.append("path")
-      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
-      .attr("class", "states")
-      .attr("d", path);
-
-  }
-
+window.addEventListener('load', function() {
+  var el = document.getElementById('map');
+  el.style.width = width;
+  el.style.height = height;
+  map = new Datamap({element: document.getElementById('map')});
+});
 </script>
+<div id='map'></div>
