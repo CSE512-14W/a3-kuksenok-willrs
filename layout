@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>Unidentified Flying Missile Launch</title>
+</head>
+<head>
+<body>
+
+<div id="vis-main">
+	<div id="big-map">
+		//TODO big interactive map
+	</div>
+	<div id="big-summary">
+		//TODO bar chart of overall datset summary
+	</div>
+	<div id="little-map">
+	</div>
+
+</div>
+
+</body>
+</html>

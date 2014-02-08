@@ -70,7 +70,6 @@ var slider = d3.select("body").append("div")
 
 queue()
     .defer(d3.json, "us.json")
-//    .defer(d3.tsv, "unemployment.tsv", function(d) { rateById.set(d.id, +d.rate); })
     .await(ready);
 
 function ready(error, us) {
@@ -79,7 +78,6 @@ function ready(error, us) {
     .selectAll("path")
       .data(topojson.feature(us, us.objects.counties).features)
     .enter().append("path")
-//      .attr("class", function(d) { return quantize(rateById.get(d.id)); })
       .attr("d", path);
 
   svg.append("path")
@@ -87,7 +85,6 @@ function ready(error, us) {
       .attr("class", "states")
       .attr("d", path);
 
-  
-}
+  }
 
 </script>
