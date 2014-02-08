@@ -48,6 +48,12 @@ def metaDataize(coder, record):
 
 coder = LocalLoc()
 metadata = [metaDataize(coder, record) for record in ufos if record != {}]
+
+// TODO(katiek): add duration converter
+// TODO(katiek): add sighted-reported lag filter
+// TODO(katiek): replace raw dates with month, year
+// TODO(tbd): add ref to file with raw text? Dump raw text? How do we want to do this?
+
 json.dump(metadata, open('../data/ufo_metadata.json', 'w'))
 
 print coder.good, " of ", coder.calls, " items geolocated."

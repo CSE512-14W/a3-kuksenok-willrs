@@ -6,11 +6,11 @@ a3-kuksenok-willrs
 1. Katie Kuksenok kuksenok@uw.edu
 2. Will Scott willrs@uw.edu
 
-## Project Name
+## Itneractive UFO visualization
 
-This is an example repository for assignment 3 submission. 
-(Put your a brief description of your final interactive visualization application and your dataset here.)
+Aimed at novice users, this interactive visualization enables answering the questions: "what's the most interesting UFO activity happening in my area? Can I trust it?"
 
+The dataset, containing 60k sightings, dating back over a 100 years due to a prety open-eneded reporting process, needed to be cleaned considerably.
 
 ## Running Instructions
 
@@ -20,21 +20,28 @@ If your visualization is web-based,  it would be great if your submissions can b
 
 Access our visualization at http://cse512-14w.github.io/a3-kuksenok-willrs/ or download this repository and run `python -m SimpleHTTPServer 9000` and access this from http://localhost:9000/.
 
-
 ## Story Board
 
-Put either your storyboard content or a [link to your storyboard pdf file](storyboard.pdf?raw=true) here.   Just like A2, you can use any software to create a *reasonable* pdf storyboard.
+[sketch goes here]
 
+- When the user first opens the application, she sees a world map. This map
+
+- We show summary histograms. Selecting a bar shows a subset of the points - not all, because not all points with shape X have location data, or vice versa. In this sense, there is brushing and linking interaction, but we tries as unobtrusively as possible to get around the incompleteness of the metadata
 
 ### Changes between Storyboard and the Final Implementation
 
-A paragraph explaining changes between the storyboard and the final implementation.
-
+Hark! Foreshadowing!
 
 ## Development Process
 
-Include:
-- Breakdown of how the work was split among the group members. 
-- a commentary on the development process, including answers to the following questions: 
-  - Roughly how much time did you spend developing your application?
-  - What aspects took the most time?
+- Katie did initial explorations of data dirtiness, and interesting phenomenon (the diary from 1910; distribution of lag; various NUFORC notes)
+- Will added geolocation data to records
+
+### Data cleaning
+
+We both spent time figuring out in what ways data were dirty; which values were missing, and so on. Here are some examples of dirtydata we discovered early on:
+
+
+### Data storage, access, and text closeness
+
+The dataset of partial, often unconvincing UFO sightings is something that truly calls for constant closeness to the data. But even 60k records translaes into 80M of data, which is pushing it for a web application - especially if it's not necessary. We are 
