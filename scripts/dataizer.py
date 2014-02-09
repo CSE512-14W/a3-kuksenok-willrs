@@ -1,5 +1,6 @@
-import json, time
+import json, time, datetime
 from geopy import geocoders
+import dateutil.parser
 
 class LocalLoc:
   def __init__(self):
@@ -43,19 +44,32 @@ ufos = [getUfo(line) for line in open('../data/ufo_awesome.json')]
 empty = sum([1 if rec == {} else 0 for rec in ufos])
 print "Total of ", empty, " errors reading ", len(ufos), " records."
 
+data = []
+
 def metaDataize(coder, record):
   # TODO(katiek): add duration converter
   # TODO(katiek): add sighted-reported lag filter
   # TODO(katiek): replace raw dates with month, year
   # TODO(tbd): add ref to file with raw text? Dump raw text? How do we want to do this?
-  return [coder.code(record['location'])]
+  try:
+    sighted = dateutil.parser.parse(record['sighted_at'])
+    reported = dateutil.parser.parse(record['reported_at'])
+    shape = record['shape']
+    loc = coder.code(record['location'])
+    datapos = len(data)
+    data.append(record['description'])
+    return [loc, sighted, reported - sighted, shape, datapos]
+  except:
+    return []
 
 coder = LocalLoc()
-metadata = [metaDataize(coder, record) for record in ufos if record != {}]
-data = [[item['description'] if 'description' in item else '' for item in ufos[start:start+1000]] for start in range(0, len(ufos), 1000)]
+metadata = [metaDataize(coder, record) for record in ufos if record != []]
+chunks = [data[start:start+1000] for start in range(0, len(data), 1000)]
 
-json.dump(metadata, open('../data/ufo_metadata.json', 'w'))
-for idx,chunk in enumerate(data):
-  json.dump(chunk, open('../data/ufo_data_' + str(1000*idx) + '.json', 'w'))
+# Dump to disk.
+datehandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime)  or isinstance(obj, datetime.date) else None
+json.dump(metadata, open('../data/ufo_metadata.json', 'w'), default=datehandler)
+for idx,chunk in enumerate(chunks):
+  json.dump(chunk, open('../data/descriptions/ufo_data_' + str(1000*idx) + '.json', 'w'))
 
 print coder.good, " of ", coder.calls, " items geolocated."
