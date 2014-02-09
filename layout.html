@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>Unidentified Flying Missile Launch</title>
+</head>
+<style type="text/css">
+	<!-- for development only -->
+	div{
+		border:solid 1px #ff0000;
+		}
+</style>
+<script src="rsrcs/d3.v3.min.js"></script>
+<script lang="javascript">
+// This lists all the possible states for the example detail and related
+// variables
+window.example_detail_state_enum = {
+    OFF : 0,
+    FROM_SEL_WT_BY_LEN : 1,		// From a selection, weighted by length
+	INDIV_DRILL_DOWN : 2		// An individual point drill-down
+}
+window.example_detail_individual = null;
+window.example_detail_wt_mutiplier = -1; 	// What we'll multiply the length by
+
+
+//summary_data = {"Total number of data points":3, "Other":5};
+
+d3.select("#big-summary")
+  .selectAll("div")
+    .data([1,2,3])
+  .enter().append("div")
+    .style("width", function(d) { return d * 10 + "px"; })
+    .text(function(d) { return d; });
+
+console.log("still alive");
+
+</script>
+<body>
+
+<div id="vis-main">
+	<div id="big-map">
+		//TODO big interactive map
+	</div>
+	<div id="big-summary"></div>
+	<div id="little-map">
+	</div>
+	
+	<div id="example-detail">
+	</div>
+
+</div>
+
+</body>
+</html>
