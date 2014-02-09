@@ -3,8 +3,15 @@
 <link rel="stylesheet" href="rsrcs/d3.slider.css" />  
 <style>
 
-body {
+body, html {
   background: black;
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
 }
 
 .q0-9 { fill:rgb(247,251,255); }
@@ -26,15 +33,20 @@ body {
 <script src="scripts/datamap.js"></script>
 <script>
 
-var width = 960,
-    height = 500,
-    map;
+var map;
 
 window.addEventListener('load', function() {
   var el = document.getElementById('map');
-  el.style.width = width;
-  el.style.height = height;
-  map = new Datamap({element: document.getElementById('map')});
+  map = new Datamap({
+    element: document.getElementById('map'),
+    fills: {
+      defaultFill: '#333'
+    },
+    geographyConfig: {
+      highlightOnHover: false,
+      popupOnHover: false
+    }
+  });
 });
 </script>
 <div id='map'></div>
