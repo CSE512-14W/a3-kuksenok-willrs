@@ -44,15 +44,18 @@ empty = sum([1 if rec == {} else 0 for rec in ufos])
 print "Total of ", empty, " errors reading ", len(ufos), " records."
 
 def metaDataize(coder, record):
-  // TODO(katiek): add duration converter
-  // TODO(katiek): add sighted-reported lag filter
-  // TODO(katiek): replace raw dates with month, year
-  // TODO(tbd): add ref to file with raw text? Dump raw text? How do we want to do this?
+  # TODO(katiek): add duration converter
+  # TODO(katiek): add sighted-reported lag filter
+  # TODO(katiek): replace raw dates with month, year
+  # TODO(tbd): add ref to file with raw text? Dump raw text? How do we want to do this?
   return [coder.code(record['location'])]
 
 coder = LocalLoc()
 metadata = [metaDataize(coder, record) for record in ufos if record != {}]
+data = [[item['description'] if 'description' in item else '' for item in ufos[start:start+1000]] for start in range(0, len(ufos), 1000)]
 
 json.dump(metadata, open('../data/ufo_metadata.json', 'w'))
+for idx,chunk in enumerate(data):
+  json.dump(chunk, open('../data/ufo_data_' + str(1000*idx) + '.json', 'w'))
 
 print coder.good, " of ", coder.calls, " items geolocated."
