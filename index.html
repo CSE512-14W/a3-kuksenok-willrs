@@ -31,6 +31,16 @@ div, svg {
   float:left;
 }
 
+#barcharts rect {
+  fill: #555555;
+}
+
+#barcharts text {
+  fill: white;
+  font: 8px sans-serif;
+  text-anchor: start;
+}
+
 #example{
   width:200px;
   color:#bbbbbb;
@@ -42,16 +52,6 @@ div, svg {
 h1 {
   color:white;
 }
-
-  .bigsummary rect {
-    fill: steelblue;
-  }
-
-  .bigsummary text {
-    fill: white;
-    font: 10px sans-serif;
-    text-anchor: end;
-  }
 </style>
 
 <body>
@@ -169,18 +169,46 @@ var loadMetaData = function(error, ufos) {
   console.log("Loafing UFOs");
   window.total = ufos.length;
   var i = 0;
+  total_shapes_dict = [];
   ufos.forEach(function(ufo) {
-    if(window.total_shapes[ufo[4]] == undefined){
-      window.total_shapes[ufo[4]] = 0;
+    var shape = ufo[4];
+    if (shape == "" || shape == "unknown" || shape == "other" || shape == "undefined") {
+      shape = "unknown / other";
     }
-    window.total_shapes[ufo[4]] ++;
+    if(total_shapes_dict[shape] == undefined){
+      total_shapes_dict[shape] = 0;
+    }
+    total_shapes_dict[shape] ++;
   });
+  window.total_shapes = keepTopX(total_shapes_dict, 20).sort(window.alphabetical_sort);
   console.log(window.total_shapes);
-  // TODO fill in window totals
   loadUfos(ufos);
 }
 var loadReadStats = function(error, stats) {
   console.log(stats);
+}
+
+window.alphabetical_sort = function(a, b) {
+    if(a.label < b.label) return -1;
+    if(a.label > b.label) return 1;
+    return 0;
+}
+
+function keepTopX(data_dict, x) {
+  var values = [];
+  console.log(data_dict);
+  for (var label in data_dict) {
+    values.push(data_dict[label]);
+  }
+  values.sort(function(a, b) { return b-a; });
+  var cutoff = values[(values.length < x ? values.length : x) - 1];
+  var resulting_data = [];
+  for (var label in data_dict) {
+    if(data_dict[label] >= cutoff && resulting_data.length<x) {
+      resulting_data.push({"label":label, "value":data_dict[label]});
+    }
+  }
+  return resulting_data;
 }
 
 // Fills in data for a UFO subset
@@ -188,53 +216,49 @@ function loadUfos(ufo_subset) {
   if (ufo_subset.length == window.total) {
     renderBarChart("#summary", window.total_summary);
     renderBarChart("#shapes", window.total_shapes);
-    renderBarChart("#years", window.total_years);
+    renderBarChart("#years", window.total_years); 
   } else {
       ufo_subset.forEach(function(ufo) {});
   }
 }
 
 function renderBarChart(which, data, subset) {
-  alert(subset);
-  // which should be the selector - #summary, for example
-  // subset indicates if there's a subset to drawor the whole thing.
+  console.log(data);
+  console.log(data.size);
   var width = 100,
   barHeight = 10;
 
-  //Why is data.lenght 0 now?, when it should be a nice full window.total_shapes
-
-  console.log("filling in "+which+" with "+data.length+" tuples");
-
-  var values = [];
-  var labels = [];
-  data.forEach(function(value,label){  values.push(value); labels.push(label);  });
-  console.log(values);
-  console.log(labels);
+  var max = 0;
+  for (var i in data) {
+    if(data[i].value>max) {
+      max = data[i].value;
+    }
+  }
 
   var x = d3.scale.linear()
-      .domain([0, d3.max(values)]) //TOOD fix
+      .domain([0, max]) //TOOD fix
       .range([0, width]);
 
-  var chart = d3.select(".bigsummary")
+  var chart = d3.select(which)
       .attr("width", width)
       .attr("height", barHeight * data.length);
 
   var bar = chart.selectAll("g")
-      .data(values)
+      .data(data)
       .enter().append("g")
       .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
-//TODO subset here...
+  //TODO subset here...
   bar.append("rect")
-      .attr("width",  function(d) { return x(d); })
+      .attr("width",  function(d) { return x(d.value); })
       .attr("height", barHeight - 1);
 
   bar.append("text")
-      .attr("x", function(d) { return x(d) - 3; })
+      .attr("x", 3)
       .attr("y", barHeight / 2)
       .attr("dy", ".35em")
-      .text(function(d, i) { return lables[i] + ": " + d; });
+      .text(function(d, i) { return d.label + ": " + d.value; });
 
-      //TODO add subset!
+  //TODO add subset!
 
 }
 
