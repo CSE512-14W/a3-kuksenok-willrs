@@ -39,6 +39,14 @@ function cluster(ufos) {
   return bubbles;
 }
 
+var popup = function(pos, bubble) {
+  d3.select('.popup')
+  .style('top', (pos[1] + 30) + "px")
+  .html("<div class='hoverinfo'><b>" + bubble.name + "</b></div>")
+  .style('left', (pos[0]) + "px")
+  .style('display', 'block');
+};
+
 d3.json("data/ufo_metadata.json", function(error, data) {
   var bub = cluster(data);
   d3.select("g.sightings").selectAll("circle")
@@ -47,7 +55,14 @@ d3.json("data/ufo_metadata.json", function(error, data) {
   .attr("class", "point")
   .attr("cx", function(d) {return proj(d.loc)[0];})
   .attr("cy", function(d) {return proj(d.loc)[1];})
-  .attr("r", function(d) {return d.radius;});
+  .attr("r", function(d) {return d.radius;})
+  .on('mouseover', function(d) {
+    var $this = d3.select(this);
+    popup(d3.mouse(this), d);
+  })
+  .on('mouseout', function(d) {
+    d3.selectAll('.popup').style('display', 'none')
+  });
 });
 
 function projection(width, height) {
@@ -89,9 +104,6 @@ function calc() {
   var min = [sx*width - .5*width/s, sy*height - .5*height/s];
   var max = [sx*width + .5*width/s, sy*height + .5*height/s];
 
-  var hue = "hsl(" + Math.random() * 360 + ",100%,50%)";
-
-
   window.datum = [];
   d3.selectAll("circle").filter(function(d) {
     var pos = proj(d.loc);
@@ -100,7 +112,7 @@ function calc() {
     window.datum.push.apply(window.datum, r.ufos);
   });
 
-  loadUfos(window.datum);
+  window.requestAnimationFrame(loadUfos.bind({}, window.datum));
 };
 
 function move() {
@@ -129,6 +141,11 @@ window.addEventListener('load', function() {
         svg = d3.select(this).call(drawMap, path, true);
         loader.on("world.0", function() { svg.selectAll("path").attr("d", path); });
       });
+
+  d3.select("#map").append('div')
+      .attr('class', 'popup')
+      .style('z-index', 10001)
+      .style('position', 'absolute');
 });
 
 

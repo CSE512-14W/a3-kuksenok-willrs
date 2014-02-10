@@ -7,6 +7,20 @@
   cursor: -moz-grab;
 }
 
+circle {
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+}
+
+circle:hover{
+  stroke: #fff;
+  stroke-width: 1px;
+}
+
+.popup {
+  border-radius: 1px; background-color: #FFF; box-shadow: 1px 1px 5px #CCC
+}
+
 .foreground.zooming {
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
