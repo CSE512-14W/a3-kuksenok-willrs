@@ -58,7 +58,7 @@ h1 {
   color:white;
 }
 
-h1 {
+h2 {
   color:#666666;
 }
 </style>
@@ -82,7 +82,7 @@ h1 {
   <div id="example">
   </div>
 </div>
-<button onclick="reloadUfoSummaries()" >Trigger Reload</button>
+<button onclick="loadUfos(window.fake_subset)" >Trigger Reload</button>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script>
@@ -119,14 +119,17 @@ window.total_shapes = [];
 window.total_years = [];
 window.total_months = [];
 
+window.fake_subset = [];
+
 var loadMetaData = function(error, ufos) {
-  console.log("Loafing UFOs");
   window.total = ufos.length;
-  var i = 0;
   total_shapes_dict = [];
   total_years_dict = [];
   total_months_dict = [];
   ufos.forEach(function(ufo) {
+    if (fake_subset.length<100) {
+      fake_subset.push(ufo);
+    }
     tally_shapes(ufo[4], total_shapes_dict);
     tally_time(ufo[2], total_years_dict, total_months_dict);
   });
