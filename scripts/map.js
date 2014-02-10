@@ -62,6 +62,13 @@ d3.json("data/ufo_metadata.json", function(error, data) {
   })
   .on('mouseout', function(d) {
     d3.selectAll('.popup').style('display', 'none')
+  })
+  .on('click', function(d) {
+    d3.select("g.sightings .active").attr("class", "point");
+    var $this = d3.select(this);
+    $this.attr("class", "point active");
+    window.datum = d.ufos;
+    window.requestAnimationFrame(loadUfos.bind({}, window.datum));
   });
 });
 
@@ -112,6 +119,7 @@ function calc() {
     window.datum.push.apply(window.datum, r.ufos);
   });
 
+  d3.select("g.sightings .active").attr("class", "point");
   window.requestAnimationFrame(loadUfos.bind({}, window.datum));
 };
 
