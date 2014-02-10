@@ -1,25 +1,11 @@
 
-// This lists all the possible states for the example detail and related
-// variables
-window.example_detail_state_enum = {
-    OFF : 0,
-    CURRENT_SELECTION : 1,   // From a selection, weighted by length
-    INDIVIDUAL : 2,   // From a selection, weighted by length
-}
-window.example_detail_state = window.example_detail_state_enum.OFF;
+window.example_set = [];
 
-setInterval(function(){recurringExampleReloader()},10000);
-
-function recurringExampleReloader() {
-  if (window.example_detail_state == window.example_detail_state_enum.CURRENT_SELECTION) {
-    var currentdate = new Date();
-
-    var nextExample = "Fetch a new example here!" +currentdate.getMinutes() + ":" + currentdate.getSeconds();
-    $('#example').animate({color : 'black'}, "slow", function(){
-      $(this).text(nextExample).animate({color : 'white'});
-    });
-    //TODO this doesn't work, I'd like something smooth here....
-  }
+function showRandomExample() {
+  var randomIndex = window.example_set[Math.floor(Math.random() * window.example_set.length)];
+  d3.json('data/descriptions/ufo_data_' +  Math.floor(randomIndex/1000) + '.json', function(data) {
+    $("#example").text(data[randomIndex%1000]);
+  });
 }
 
 window.addEventListener('load', function() {
@@ -28,6 +14,7 @@ window.addEventListener('load', function() {
 });
 
 window.total = 0;
+window.missiles = 0;
 window.total_shapes = [];
 window.total_years = [];
 window.total_months = [];
@@ -40,6 +27,7 @@ var loadMetaData = function(error, ufos) {
   total_years_dict = [];
   total_months_dict = [];
   ufos.forEach(function(ufo) {
+    if(ufo[5] == 1) window.missiles ++;
     if (fake_subset.length<100) {
       fake_subset.push(ufo);
     }
@@ -60,21 +48,40 @@ var loadMetaData = function(error, ufos) {
 }
 
 function loadUfos(ufo_subset) {
+    window.example_set = [];
   if (ufo_subset.length == window.total) {
     renderBarChart("#shapes", window.total_shapes);
     renderBarChart("#years", window.total_years); 
     renderBarChart("#months", window.total_months); 
     $("#headline").text("There have been " + window.total + " UFO sightings to-date.");
-    $("#subhead").text("Of which Z contain a NUFORC note 'missile launch.'");
+    $("#subhead").text("Of which "+ window.missiles +" contain a NUFORC note 'missile launch.'");
   } else {
-      $("#headline").text("Showing " + ufo_subset.length + " of total " + window.total);
-      $("#subhead").text("Of which Z contain a NUFORC note 'missile launch.'");
+      var missiles = 0;
+      window.example_set = [];
       ufo_subset.forEach(function(ufo) {
         console.log(ufo);
+        if(ufo[5] == 1) {
+          missiles ++;
+        }
+        window.example_set.push(ufo[6]);
+
         // which year is it?
         // which month is it?
         // which shape it is?
+        // show random example! allow to cycle through random examples!
+
       });
+      showRandomExample();
+      $("#headline").text("Showing " + ufo_subset.length + " of total " + window.total);
+      if (missiles>1) {
+        $("#subhead").text("Of which "+missiles+" has a NUFORC note 'missile launch.'");
+      }
+      else if (missiles==0) {
+        $("#subhead").text("Of which just one has a NUFORC note 'missile launch!'");
+      }
+      else {
+        $("#subhead").text("The truth is out there.");
+      }
   }
 }
 
