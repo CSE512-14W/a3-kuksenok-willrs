@@ -47,6 +47,36 @@ window.addEventListener('load', function() {
       popupOnHover: false
     }
   });
+
+  queue().defer(d3.json, 'data/ufo_metadata.json').await(bubble);
 });
+
+var bubble = function(error, ufos) {
+  var locs = {};
+  var bubbles = [];
+  ufos.forEach(function(ufo) {
+    if (!ufo[0] || ufo[0][0] === 0 || ufo[0][1] === 0 ||
+        ufo[0][0] === undefined || ufo[0][1] === undefined) {
+      return;
+    }
+    var key = ufo[0][0] + ',' + ufo[0][1]
+    if (locs[key]) {
+      bubbles[locs[key]].count += 1;
+    } else {
+      locs[key] = bubbles.length;
+      bubbles.push({
+        name: key,
+        latitude: ufo[0][0],
+        longitude: ufo[0][1],
+        count: 1
+      });
+    }
+  });
+  bubbles.forEach(function(bubble) {
+    bubble.radius = Math.sqrt(bubble.count);
+  });
+  map.bubbles(bubbles);
+};
+
 </script>
 <div id='map'></div>
