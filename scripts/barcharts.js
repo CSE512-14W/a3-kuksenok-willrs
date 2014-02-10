@@ -4,7 +4,7 @@ window.example_set = [];
 function showRandomExample() {
   var randomIndex = window.example_set[Math.floor(Math.random() * window.example_set.length)];
   d3.json('data/descriptions/ufo_data_' +  1000*Math.floor(randomIndex/1000) + '.json', function(data) {
-    $("#example").text(data[randomIndex%1000]);
+    $("#example").html(data[randomIndex%1000]);
   });
 }
 
