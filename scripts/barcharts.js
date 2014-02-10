@@ -4,7 +4,9 @@ window.example_set = [];
 function showRandomExample() {
   var randomIndex = window.example_set[Math.floor(Math.random() * window.example_set.length)];
   d3.json('data/descriptions/ufo_data_' +  1000*Math.floor(randomIndex/1000) + '.json', function(data) {
-    $("#example").html(data[randomIndex%1000]);
+    $("#example").fadeOut(function() {
+      $(this).html(data[randomIndex%1000])
+    }).fadeIn();
   });
 }
 
@@ -115,6 +117,7 @@ function renderBarChart(which, data, subset) {
   var width = 100,
   barHeight = 10;
   var max = 0;
+  var subset_max = 0;
   for (var i in data) {
     if(data[i].value>max) {
       max = data[i].value;
@@ -122,13 +125,16 @@ function renderBarChart(which, data, subset) {
 
     if(subset!=undefined) {
       data[i].subset_value = subset[data[i].label];
+      if(data[i].subset_value>max) {
+        subset_max = data[i].subset_value;
+      }
     } else {
       data[i].subset_value = 0;
     }
   }
 
   var x = d3.scale.linear()
-      .domain([0, max]) //TOOD fix
+      .domain([0, max])
       .range([0, width]);
 
   var chart = d3.select(which)
@@ -146,12 +152,12 @@ function renderBarChart(which, data, subset) {
   //Add elements to all the new bars
   newbars.append("rect")
       .classed('bar', true)
-      .attr("width",  function(d) { return x(d.value); })
+      .attr("width",  function(d) { return x(transform(d.value)); })
       .attr("height", barHeight - 1);
       
   newbars.append("rect")
         .classed('subset', true)
-        .attr("width",  function(d) { return x(d.subset_value); })
+        .attr("width",  function(d) { return x(transform(d.subset_value)); })
         .attr("height", barHeight - 1);
         
   newbars.append("text")
@@ -164,14 +170,12 @@ function renderBarChart(which, data, subset) {
   bind.exit().remove();
   
   //Update the existing bars
-  bind.attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
-  
   bind.selectAll('rect.bar')
-    .attr("width",  function(d) { return x(d.value); })
+    .attr("width",  function(d) { return x(transform(d.value)); })
     .attr("height", barHeight - 1);
     
   bind.selectAll('rect.subset')
-    .attr("width",  function(d) { return x(d.subset_value); })
+    .attr("width",  function(d) { return x(transform(d.subset_value)); })
     .attr("height", barHeight - 1);
     
   bind.selectAll('text')
