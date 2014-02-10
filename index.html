@@ -229,7 +229,7 @@ function loadUfos(ufo_subset) {
     $("#headline").text("There have been " + window.total + " UFO sightings to-date.");
     $("#subhead").text("Of which Z contain a NUFORC note 'missile launch.'");
   } else {
-      $("#headline").text("Showing " + ufo_subset.length + " of total " window.length);
+      $("#headline").text("Showing " + ufo_subset.length + " of total " + window.length);
       $("#subhead").text("Of which Z contain a NUFORC note 'missile launch.'");
       ufo_subset.forEach(function(ufo) {
         // which year is it?
