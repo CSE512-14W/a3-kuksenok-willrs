@@ -23,7 +23,7 @@ body, html {
 }
 
 #barcharts svg {
-  height:300px;
+  height:130px;
   width:100px;
   float:left;
 }
@@ -55,10 +55,17 @@ body, html {
 
 h1 {
   color:white;
+  font-size: 20pt;
+  height:60px;
 }
 
 h2 {
   color:#666666;
+  font-size: 10pt;
+  height:60px;
+}
+#help{
+  color:white;
 }
 
 #vis-main {
@@ -85,10 +92,18 @@ h2 {
     <svg id="years"></svg>
     <svg id="months"></svg>
   </div>
-  <div id="example">
+  <div id="example-box">
+    <h2>Don't believe this? How's this eyewitness account for evidence:</h2>
+    <div id="example">
+    </div>
+    <button onclick="showRandomExample()">Still not convinced! Show me another random example from the geographic area I selected</button>
   </div>
 </div>
-<!--
+<div id="help">
+      Each of these charts whos the number of sightings associated with that UFO shape, year, or sighting month. 
+
+  </div>
+  <!--
 <button onclick="loadUfos(window.fake_subset)" >Trigger Reload</button>
 -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
