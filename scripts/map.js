@@ -67,7 +67,8 @@ d3.json("data/ufo_metadata.json", function(error, data) {
     d3.select("g.sightings .active").attr("class", "point");
     var $this = d3.select(this);
     $this.attr("class", "point active");
-    loadUfos(d.ufos);
+    window.datum = d.ufos;
+    window.requestAnimationFrame(loadUfos.bind({}, window.datum));
   });
 });
 
