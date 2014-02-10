@@ -21,11 +21,13 @@ function cluster(ufos) {
     var key = ufo[0][0] + ',' + ufo[0][1]
     if (locs[key]) {
       bubbles[locs[key]].count += 1;
+      bubbles[locs[key]].ufos.push(ufo);
     } else {
       locs[key] = bubbles.length;
       var ll = [ufo[0][1], ufo[0][0]];
       bubbles.push({
         name: ufo[1],
+        ufos: [ufo],
         loc: ll,
         count: 1
       });
@@ -82,16 +84,23 @@ function drawMap(svg, path, mousePoint) {
 function calc() {
   var t = zoom.translate();
   var s = zoom.scale();
+  var sx = -(t[0] - width/2)/(s*width);
+  var sy = -(t[1] - height/2)/(s*height);
+  var min = [sx*width - .5*width/s, sy*height - .5*height/s];
+  var max = [sx*width + .5*width/s, sy*height + .5*height/s];
+
   var hue = "hsl(" + Math.random() * 360 + ",100%,50%)";
 
-  window.datum = d3.selectAll("circle").filter(function(d) {
+
+  window.datum = [];
+  d3.selectAll("circle").filter(function(d) {
     var pos = proj(d.loc);
-    return (pos[0] > 0 && pos[0] < 500 && pos[1] > 0 && pos[1] < 500);
-  })
-  .style('fill', function() {
-    return hue;
+    return (pos[0] > min[0] && pos[0] < max[0] && pos[1] > min[1] && pos[1] < max[1]);
+  }).each(function(r) {
+    window.datum.push.apply(window.datum, r.ufos);
   });
-  console.warn(window.datum[0].length);
+
+  loadUfos(window.datum);
 };
 
 function move() {
