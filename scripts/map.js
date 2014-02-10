@@ -1,10 +1,10 @@
 var loader = d3.dispatch("world");
 
 d3.json("data/world-110m.json", function(error, world) {
-  d3.selectAll("svg").insert("path", ".foreground")
+  d3.select("#map").selectAll("svg").insert("path", ".foreground")
       .datum(topojson.feature(world, world.objects.land))
       .attr("class", "land");
-  d3.selectAll("svg").insert("path", ".foreground")
+  d3.select("#map").selectAll("svg").insert("path", ".foreground")
       .datum(topojson.mesh(world, world.objects.countries))
       .attr("class", "mesh");
   loader.world();
@@ -48,7 +48,7 @@ d3.json("data/ufo_metadata.json", function(error, data) {
   .attr("r", function(d) {return d.radius;});
 });
 
-function orthographicProjection(width, height) {
+function projection(width, height) {
   return d3.geo.mercator()
       .precision(.5)
       .translate([0, 0])
@@ -74,31 +74,42 @@ function drawMap(svg, path, mousePoint) {
   
   zoom = d3.behavior.zoom()
           .scaleExtent([1, 8])
-          .on("zoom", move);
+          .on("zoom", move)
+          .on("zoomend", calc);
   svg.call(zoom);
 }
 
-function move() {
+function calc() {
+  var t = zoom.translate();
+  var s = zoom.scale();
+  var hue = "hsl(" + Math.random() * 360 + ",100%,50%)";
 
+  window.datum = d3.selectAll("circle").filter(function(d) {
+    var pos = proj(d.loc);
+    return (pos[0] > 0 && pos[0] < 500 && pos[1] > 0 && pos[1] < 500);
+  })
+  .style('fill', function() {
+    return hue;
+  });
+  console.warn(window.datum[0].length);
+};
+
+function move() {
   var t = d3.event.translate;
-  var s = d3.event.scale;  
-  var h = 0;
-  
-  t[0] = Math.min(width / 2 * (s - 1), Math.max(width / 2 * (1 - s), t[0]));
-  t[1] = Math.min(height / 2 * (s - 1) + h * s, Math.max(height / 2 * (1 - s) - h * s, t[1]));
+  var s = d3.event.scale;
 
   zoom.translate(t);
-  d3.selectAll("g").style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
-  d3.selectAll("path").attr("transform", "translate(" + t + ")scale(" + s + ")");
+  d3.select("#map").selectAll("g").style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
+  d3.select("#map").selectAll("path").attr("transform", "translate(" + t + ")scale(" + s + ")");
 }
 
 
 
 var width = 500,
     height = 500,
-    proj = orthographicProjection(width, height)
+    proj = projection(width, height)
           .scale(100)
-          .translate([width / 2, height * .56]);
+          .translate([width / 2, height /2]);
     
 window.addEventListener('load', function() {
   d3.select("#map")
