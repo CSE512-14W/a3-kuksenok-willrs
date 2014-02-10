@@ -39,7 +39,7 @@ function cluster(ufos) {
 
 d3.json("data/ufo_metadata.json", function(error, data) {
   var bub = cluster(data);
-  d3.select("svg").append("g").selectAll("circle")
+  d3.select("g.sightings").selectAll("circle")
   .data(bub).enter()
   .append("circle")
   .attr("class", "point")
@@ -75,6 +75,9 @@ function drawMap(svg, path, mousePoint) {
       .datum({type: "Sphere"})
       .attr("class", "foreground")
       .attr("d", path);
+  
+  svg.append("g")
+      .attr("class", "sightings");
   
   zoom = d3.behavior.zoom()
           .scaleExtent([1, 8])
