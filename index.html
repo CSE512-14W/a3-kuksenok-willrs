@@ -76,7 +76,12 @@ var bubble = function(error, ufos) {
   bubbles.forEach(function(bubble) {
     bubble.radius = Math.sqrt(bubble.count);
   });
-  map.bubbles(bubbles);
+  map.bubbles(bubbles, {
+    fillOpacity: 0.5,
+    highlightBorderWidth: 1,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.5)"
+  });
 };
 
 </script>
