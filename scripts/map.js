@@ -10,6 +10,44 @@ d3.json("../data/world-110m.json", function(error, world) {
   loader.world();
 });
 
+function cluster(ufos) {
+  var locs = {};
+  var bubbles = [];
+  ufos.forEach(function(ufo) {
+    if (!ufo[0] || ufo[0][0] === 0 || ufo[0][1] === 0 ||
+        ufo[0][0] === undefined || ufo[0][1] === undefined) {
+      return;
+    }
+    var key = ufo[0][0] + ',' + ufo[0][1]
+    if (locs[key]) {
+      bubbles[locs[key]].count += 1;
+    } else {
+      locs[key] = bubbles.length;
+      var ll = [ufo[0][1], ufo[0][0]];
+      bubbles.push({
+        name: ufo[1],
+        loc: ll,
+        count: 1
+      });
+    }
+  });
+  bubbles.forEach(function(bubble) {
+    bubble.radius = Math.sqrt(bubble.count);
+  });
+  return bubbles;
+}
+
+d3.json("../data/ufo_metadata.json", function(error, data) {
+  window.bubbles = cluster(data);
+  d3.select("svg").append("g").selectAll("circle")
+  .data(window.bubbles).enter()
+  .append("circle")
+  .attr("class", "point")
+  .attr("cx", function(d) {return d.loc[0];})
+  .attr("cy", function(d) {return d.loc[1];})
+  .attr("r", function(d) {return d.radius;});
+});
+
 function orthographicProjection(width, height) {
   return d3.geo.orthographic()
       .precision(.5)
@@ -46,12 +84,15 @@ window.addEventListener('load', function() {
   .each(function(projection) {
     var path = d3.geo.path().projection(projection),
         svg = d3.select(this).call(drawMap, path, true);
-        svg.selectAll(".foreground")
+        svg.selectAll(".foreground, .point")
             .call(d3.geo.zoom().projection(projection)
               .scaleExtent([projection.scale() * .7, projection.scale() * 10])
               .on("zoom.redraw", function() {
                 d3.event.sourceEvent.preventDefault();
                 svg.selectAll("path").attr("d", path);
+                svg.selectAll("circle")
+                .attr("cx", function(d) { return projection(d.loc)[0]})
+                .attr("cy", function(d) { return projection(d.loc)[1]});
               }));
         loader.on("world.0", function() { svg.selectAll("path").attr("d", path); });
       });
