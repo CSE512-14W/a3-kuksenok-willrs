@@ -49,13 +49,6 @@ d3.json("data/ufo_metadata.json", function(error, data) {
 });
 
 function orthographicProjection(width, height) {
-/*  return d3.geo.equirectangular()
-      .precision(.5)
-      .clipAngle(90)
-      .clipExtent([[1, 1], [width - 1, height - 1]])
-      .translate([width / 2, height / 2])
-      .scale(width / 2 - 10)
-      .rotate([100, 0]);*/
   return d3.geo.mercator()
       .precision(.5)
       .translate([0, 0])
@@ -89,7 +82,7 @@ function move() {
 
   var t = d3.event.translate;
   var s = d3.event.scale;  
-  var h = height / 3;
+  var h = 0;
   
   t[0] = Math.min(width / 2 * (s - 1), Math.max(width / 2 * (1 - s), t[0]));
   t[1] = Math.min(height / 2 * (s - 1) + h * s, Math.max(height / 2 * (1 - s) - h * s, t[1]));
@@ -104,7 +97,7 @@ function move() {
 var width = 500,
     height = 500,
     proj = orthographicProjection(width, height)
-          .scale(245)
+          .scale(100)
           .translate([width / 2, height * .56]);
     
 window.addEventListener('load', function() {
@@ -114,16 +107,6 @@ window.addEventListener('load', function() {
   .each(function(projection) {
     var path = d3.geo.path().projection(projection),
         svg = d3.select(this).call(drawMap, path, true);
-      /*  svg.selectAll(".foreground, .point")
-            .call(d3.geo.zoom().projection(projection)
-              .scaleExtent([projection.scale() * .7, projection.scale() * 10])
-              .on("zoom.redraw", function() {
-                d3.event.sourceEvent.preventDefault();
-                svg.selectAll("path").attr("d", path);
-                svg.selectAll("circle")
-                .attr("cx", function(d) { return projection(d.loc)[0]})
-                .attr("cy", function(d) { return projection(d.loc)[1]});
-              }));*/
         loader.on("world.0", function() { svg.selectAll("path").attr("d", path); });
       });
 });
