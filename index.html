@@ -144,97 +144,99 @@ window.example_detail_state = window.example_detail_state_enum.OFF;
 setInterval(function(){recurringExampleReloader()},10000);
 
 function recurringExampleReloader() {
-  //Fade in/out
-  // var mySquare=d3.select("example").text("hello!");
-  //if (window.example_detail_state == window.example_detail_state_enum.CURRENT_SELECTION) {
+  if (window.example_detail_state == window.example_detail_state_enum.CURRENT_SELECTION) {
     var currentdate = new Date();
 
     var nextExample = "Fetch a new example here!" +currentdate.getMinutes() + ":" + currentdate.getSeconds();
-    $("#example").fadeOut(4000, function(){$("#example").text(nextExample)});
-    console.log(nextExample);
-  //}
+    $('#example').animate({color : 'black'}, "slow", function(){
+      $(this).text(nextExample).animate({color : 'white'});
+    });
+    //TODO this doesn't work, I'd like something smooth here....
+  }
 }
 
 window.addEventListener('load', function() {
-    queue().defer(d3.json, 'data/ufo_metadata.json').await(initialLoad);
+    queue().defer(d3.json, 'data/ufo_metadata.json').await(loadMetaData);
+    queue().defer(d3.json, 'data/ufo_read_stats.json').await(loadReadStats);
 });
 
-var initialLoad = function(error, ufos) {
-  console.log("Initial loading...");
-  window.ufo_stats = [
-    {"Total" : ufos.length}
-    // twhatever we have about read error stats...
-    ]
+window.total = 0;
+window.total_summary = [];
+window.total_shapes = [];
+window.total_years = [];
+
+var loadMetaData = function(error, ufos) {
+  console.log("Loafing UFOs");
+  window.total = ufos.length;
+  var i = 0;
+  ufos.forEach(function(ufo) {
+    if(window.total_shapes[ufo[4]] == undefined){
+      window.total_shapes[ufo[4]] = 0;
+    }
+    window.total_shapes[ufo[4]] ++;
+  });
+  console.log(window.total_shapes);
+  // TODO fill in window totals
+  loadUfos(ufos);
+}
+var loadReadStats = function(error, stats) {
+  console.log(stats);
 }
 
 // Fills in data for a UFO subset
 function loadUfos(ufo_subset) {
-  var big_summary
-  ufos.forEach(function(ufo) {});
+  if (ufo_subset.length == window.total) {
+    renderBarChart("#summary", window.total_summary);
+    renderBarChart("#shapes", window.total_shapes);
+    renderBarChart("#years", window.total_years);
+  } else {
+      ufo_subset.forEach(function(ufo) {});
+  }
 }
 
- var data = [
-  {"label" : "total", "value" : 30},
-  {"label" : "subset", "value" : 20}
-  ];
+function renderBarChart(which, data, subset) {
+  alert(subset);
+  // which should be the selector - #summary, for example
+  // subset indicates if there's a subset to drawor the whole thing.
+  var width = 100,
+  barHeight = 10;
 
-var width = 420,
-barHeight = 20;
+  //Why is data.lenght 0 now?, when it should be a nice full window.total_shapes
 
-var x = d3.scale.linear()
-    .domain([0, d3.max(olddata)])
-    .range([0, width]);
+  console.log("filling in "+which+" with "+data.length+" tuples");
 
+  var values = [];
+  var labels = [];
+  data.forEach(function(value,label){  values.push(value); labels.push(label);  });
+  console.log(values);
+  console.log(labels);
 
+  var x = d3.scale.linear()
+      .domain([0, d3.max(values)]) //TOOD fix
+      .range([0, width]);
 
-var chart = d3.select(".bigsummary")
-    .attr("width", width)
-    .attr("height", barHeight * data.length);
+  var chart = d3.select(".bigsummary")
+      .attr("width", width)
+      .attr("height", barHeight * data.length);
 
-var bar = chart.selectAll("g")
-    .data(data)
-    .enter().append("g")
-    .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
-
-bar.append("rect")
-    .attr("width",  function(d) { return x(d["value"]); })
-    .attr("height", barHeight - 1);
-
-bar.append("text")
-    .attr("x", function(d) { return x(d["value"]) - 3; })
-    .attr("y", barHeight / 2)
-    .attr("dy", ".35em")
-    .text(function(d, i) { return d["label"] + ": " + d["value"]; });
-
-d3.select('.bigsummary').on("click", function() {
-  data.push({"label" : "new", "value": 10});
-    console.log(data);
-    
-   // x.domain(d3.extent(data, function(d) { return d.x; }));
-   // y.domain([0, d3.max(data, function(d) { return d.y; })]);
-
-    //chart.selectAll("g").data(data);
-    
-    
-    var chart = d3.select(".bigsummary")
-        .attr("width", width)
-        .attr("height", barHeight * data.length);
-    
-    var bar = chart.selectAll("g")
-      .data(data)
+  var bar = chart.selectAll("g")
+      .data(values)
       .enter().append("g")
       .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
-
+//TODO subset here...
   bar.append("rect")
-      .attr("width",  function(d) { return x(d["value"]); })
+      .attr("width",  function(d) { return x(d); })
       .attr("height", barHeight - 1);
 
   bar.append("text")
-      .attr("x", function(d) { return x(d["value"]) - 3; })
+      .attr("x", function(d) { return x(d) - 3; })
       .attr("y", barHeight / 2)
       .attr("dy", ".35em")
-    .text(function(d, i) { return d["label"] + ": " + d["value"]; });
-    console.log(chart);
-});
+      .text(function(d, i) { return lables[i] + ": " + d; });
+
+      //TODO add subset!
+
+}
+
 
 </script>

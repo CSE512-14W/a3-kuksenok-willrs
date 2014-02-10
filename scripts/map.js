@@ -1,6 +1,6 @@
 var loader = d3.dispatch("world");
 
-d3.json("../data/world-110m.json", function(error, world) {
+d3.json("data/world-110m.json", function(error, world) {
   d3.selectAll("svg").insert("path", ".foreground")
       .datum(topojson.feature(world, world.objects.land))
       .attr("class", "land");
@@ -37,7 +37,7 @@ function cluster(ufos) {
   return bubbles;
 }
 
-d3.json("../data/ufo_metadata.json", function(error, data) {
+d3.json("data/ufo_metadata.json", function(error, data) {
   var bub = cluster(data);
   d3.select("svg").append("g").selectAll("circle")
   .data(bub).enter()
