@@ -95,8 +95,8 @@ function loadUfos(ufo_subset) {
 
       });
       renderBarChart("#shapes", window.total_shapes, shape_subset);
-      renderBarChart("#month", window.total_months, month_subset);
-      renderBarChart("#year", window.total_years, year_subset);
+      renderBarChart("#months", window.total_months, month_subset);
+      renderBarChart("#years", window.total_years, year_subset);
       showRandomExample();
       $("#headline").text("Showing " + ufo_subset.length + " of total " + window.total);
       if (missiles>1) {
@@ -114,7 +114,6 @@ function loadUfos(ufo_subset) {
 function renderBarChart(which, data, subset) {
   var width = 100,
   barHeight = 10;
-console.log(subset);
   var max = 0;
   for (var i in data) {
     if(data[i].value>max) {
