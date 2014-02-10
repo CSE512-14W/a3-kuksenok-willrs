@@ -45,16 +45,15 @@ data = []
 
 def metaDataize(coder, record):
   try:
-    # TODO(katiek): replace raw dates with month, year
     sighted = dateutil.parser.parse(record['sighted_at'])
     reported = dateutil.parser.parse(record['reported_at'])
     shape = record['shape'].strip()
     # TODO(katiek): add duration converter
-    # TODO(katiek): add "missile launch"!
     loc = coder.code(record['location'])
     datapos = len(data)
     data.append(record['description'])
-    return [loc, record['location'], sighted, (reported - sighted).total_seconds(), shape, datapos]
+    missile_launch = 1 if "missile launch" in record['description'].lower() else 0
+    return [loc, record['location'], sighted, (reported - sighted).total_seconds(), shape, missile_launch, datapos]
   except:
     return []
 

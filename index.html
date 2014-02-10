@@ -57,6 +57,10 @@ div, svg {
 h1 {
   color:white;
 }
+
+h1 {
+  color:#666666;
+}
 </style>
 
 <body>
@@ -69,7 +73,8 @@ h1 {
 <div id="vis-main">
   <div id='map'></div>
   <div id='barcharts'>
-    <h1 id="label">X of Y UFOs selected. Z mention a missile launch.</h1>
+    <h1 id="headline"></h1>
+    <h2 id="subhead"></h2>
     <svg id="shapes"></svg>
     <svg id="years"></svg>
     <svg id="months"></svg>
@@ -135,7 +140,6 @@ var loadMetaData = function(error, ufos) {
     window.total_months.push({"label" : month_names[i], "value" : total_months_dict[i]});
   }
   window.total_years = keepLastX(total_years_dict, 12);
-
   loadUfos(ufos);
 }
 
@@ -217,14 +221,21 @@ function keepTopX(data_dict, x) {
   return resulting_data;
 }
 
-// Fills in data for a UFO subset
 function loadUfos(ufo_subset) {
   if (ufo_subset.length == window.total) {
     renderBarChart("#shapes", window.total_shapes);
     renderBarChart("#years", window.total_years); 
     renderBarChart("#months", window.total_months); 
+    $("#headline").text("There have been " + window.total + " UFO sightings to-date.");
+    $("#subhead").text("Of which Z contain a NUFORC note 'missile launch.'");
   } else {
-      ufo_subset.forEach(function(ufo) {});
+      $("#headline").text("Showing " + ufo_subset.length + " of total " window.length);
+      $("#subhead").text("Of which Z contain a NUFORC note 'missile launch.'");
+      ufo_subset.forEach(function(ufo) {
+        // which year is it?
+        // which month is it?
+        // which shape it is?
+      });
   }
 }
 
