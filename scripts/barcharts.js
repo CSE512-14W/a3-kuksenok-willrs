@@ -58,19 +58,28 @@ function loadUfos(ufo_subset) {
   } else {
       var missiles = 0;
       window.example_set = [];
+      shape_subset = [];
+      for (var i = window.total_shapes.length - 1; i >= 0; i--) {
+        shape_subset[window.total_shapes[i].label] = 0;
+      };
+
       ufo_subset.forEach(function(ufo) {
-        console.log(ufo);
         if(ufo[5] == 1) {
           missiles ++;
         }
         window.example_set.push(ufo[6]);
 
+        shape = ufo[4];
+        if (shape == "" || shape == "unknown" || shape == "other" || shape == "undefined") {
+           shape_subset["unknown / other"] ++;
+        }
+        else if(shape_subset[shape] != undefined) {
+          shape_subset[shape]++;
+        }
         // which year is it?
         // which month is it?
-        // which shape it is?
-        // show random example! allow to cycle through random examples!
-
       });
+    renderBarChart("#shapes", window.total_shapes, shape_subset);
       showRandomExample();
       $("#headline").text("Showing " + ufo_subset.length + " of total " + window.total);
       if (missiles>1) {
@@ -94,6 +103,12 @@ function renderBarChart(which, data, subset) {
     if(data[i].value>max) {
       max = data[i].value;
     }
+
+    if(subset!=undefined) {
+      data[i].subset_value = subset[data[i].label];
+    } else {
+      data[i].subset_value = 0;
+    }
   }
 
   var x = d3.scale.linear()
@@ -108,10 +123,18 @@ function renderBarChart(which, data, subset) {
       .data(data)
       .enter().append("g")
       .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
-  //TODO subset here...
+
   bar.append("rect")
       .attr("width",  function(d) { return x(d.value); })
       .attr("height", barHeight - 1);
+  
+    if(subset!=undefined) {
+      console.log("trying to draw this in "+which)
+      bar.append("rect")
+        .classed('subset', true)
+        .attr("width",  function(d) { console.log(x(d.subset_value)); return x(d.subset_value); })
+        .attr("height", barHeight - 1);
+    }
 
   bar.append("text")
       .attr("x", 3)

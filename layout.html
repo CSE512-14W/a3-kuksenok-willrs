@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+	div{
+		border:solid 1px #ff0000;
+		}
+	.bigsummary rect {
+	  fill: steelblue;
+	}
+
+	.bigsummary text {
+	  fill: white;
+	  font: 10px sans-serif;
+	  text-anchor: end;
+	}
+</style>
+<script src="rsrcs/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<body>
+<p></p>
+<div id="vis-main">
+	<div id="big-map">
+	</div>
+	<svg class="bigsummary"></svg>
+	<div id="little-map">
+	</div>
+	
+	<div id="example-detail">
+	</div>
+<script>
+// This lists all the possible states for the example detail and related
+// variables
+/*window.example_detail_state_enum = {
+    OFF : 0,
+    FROM_SEL_WT_BY_LEN : 1,		// From a selection, weighted by length
+	INDIV_DRILL_DOWN : 2		// An individual point drill-down
+}
+window.example_detail_individual = null;
+window.example_detail_wt_mutiplier = -1; 	// What we'll multiply the length by
+*/
+
+window.addEventListener('load', function() {
+    queue().defer(d3.json, 'data/ufo_metadata.json').await(initialLoad);
+});
+
+var initialLoad = function(error, ufos) {
+	console.log("Initial loading...");
+	window.ufo_stats = [
+		{"Total" : ufos.length}
+		// twhatever we have about read error stats...
+		]
+}
+
+// Fills in data for a UFO subset
+function loadUfos(ufo_subset) {
+	var big_summary
+ 	ufos.forEach(function(ufo) {});
+}
+
+ var data = [
+	{"label" : "total", "value" : 30},
+	{"label" : "subset", "value" : 20}
+	];
+
+var width = 420,
+barHeight = 20;
+
+var x = d3.scale.linear()
+    .domain([0, d3.max(olddata)])
+    .range([0, width]);
+
+
+
+var chart = d3.select(".bigsummary")
+    .attr("width", width)
+    .attr("height", barHeight * data.length);
+
+var bar = chart.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+bar.append("rect")
+    .attr("width",  function(d) { return x(d["value"]); })
+    .attr("height", barHeight - 1);
+
+bar.append("text")
+    .attr("x", function(d) { return x(d["value"]) - 3; })
+    .attr("y", barHeight / 2)
+    .attr("dy", ".35em")
+    .text(function(d, i) { return d["label"] + ": " + d["value"]; });
+
+d3.select('.bigsummary').on("click", function() {
+	data.push({"label" : "new", "value": 10});
+    console.log(data);
+    
+   // x.domain(d3.extent(data, function(d) { return d.x; }));
+   // y.domain([0, d3.max(data, function(d) { return d.y; })]);
+
+    //chart.selectAll("g").data(data);
+    
+    
+    var chart = d3.select(".bigsummary")
+        .attr("width", width)
+        .attr("height", barHeight * data.length);
+    
+    var bar = chart.selectAll("g")
+	    .data(data)
+	    .enter().append("g")
+	    .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+	bar.append("rect")
+	    .attr("width",  function(d) { return x(d["value"]); })
+	    .attr("height", barHeight - 1);
+
+	bar.append("text")
+	    .attr("x", function(d) { return x(d["value"]) - 3; })
+	    .attr("y", barHeight / 2)
+	    .attr("dy", ".35em")
+    .text(function(d, i) { return d["label"] + ": " + d["value"]; });
+    console.log(chart);
+});
+
+</script>
+
+</div>
