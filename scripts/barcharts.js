@@ -3,7 +3,7 @@ window.example_set = [];
 
 function showRandomExample() {
   var randomIndex = window.example_set[Math.floor(Math.random() * window.example_set.length)];
-  d3.json('data/descriptions/ufo_data_' +  Math.floor(randomIndex/1000) + '.json', function(data) {
+  d3.json('data/descriptions/ufo_data_' +  1000*Math.floor(randomIndex/1000) + '.json', function(data) {
     $("#example").text(data[randomIndex%1000]);
   });
 }
@@ -18,6 +18,7 @@ window.missiles = 0;
 window.total_shapes = [];
 window.total_years = [];
 window.total_months = [];
+window.year_converter = function(year){ return year; }
 
 window.fake_subset = [];
 
@@ -59,8 +60,13 @@ function loadUfos(ufo_subset) {
       var missiles = 0;
       window.example_set = [];
       shape_subset = [];
-      for (var i = window.total_shapes.length - 1; i >= 0; i--) {
-        shape_subset[window.total_shapes[i].label] = 0;
+      for (var i = window.total_shapes.length - 1; i >= 0; i--) { shape_subset[window.total_shapes[i].label] = 0; }
+      year_subset = [];
+      for (var i = window.total_years.length - 1; i >= 0; i--) { year_subset[window.total_years[i].label] = 0; }
+      month_subset = [];
+      month_names = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      for (var i = window.total_months.length - 1; i >= 0; i--) {
+        month_subset[window.total_months[i].label] = 0;
       };
 
       ufo_subset.forEach(function(ufo) {
@@ -76,10 +82,21 @@ function loadUfos(ufo_subset) {
         else if(shape_subset[shape] != undefined) {
           shape_subset[shape]++;
         }
-        // which year is it?
-        // which month is it?
+
+        var date = new Date(ufo[2]);
+        var month_label = month_names[date.getMonth()];
+        var year_label = window.year_converter(date.getFullYear());
+        if(month_subset[month_label] != undefined) {
+          month_subset[month_label]++;
+        }
+        if(year_subset[year_label] != undefined) {
+          year_subset[year_label]++;
+        }
+
       });
-    renderBarChart("#shapes", window.total_shapes, shape_subset);
+      renderBarChart("#shapes", window.total_shapes, shape_subset);
+      renderBarChart("#month", window.total_months, month_subset);
+      renderBarChart("#year", window.total_years, year_subset);
       showRandomExample();
       $("#headline").text("Showing " + ufo_subset.length + " of total " + window.total);
       if (missiles>1) {
@@ -128,13 +145,10 @@ function renderBarChart(which, data, subset) {
       .attr("width",  function(d) { return x(d.value); })
       .attr("height", barHeight - 1);
   
-    if(subset!=undefined) {
-      console.log("trying to draw this in "+which)
-      bar.append("rect")
-        .classed('subset', true)
-        .attr("width",  function(d) { console.log(x(d.subset_value)); return x(d.subset_value); })
-        .attr("height", barHeight - 1);
-    }
+  bar.append("rect")
+    .classed('subset', true)
+    .attr("width",  function(d) { return x(d.subset_value); })
+    .attr("height", barHeight - 1);
 
   bar.append("text")
       .attr("x", 3)
@@ -193,8 +207,12 @@ function keepLastX(data_dict, x) {
   years.sort();
   var resulting_data = [];
   var i = years.length - 1;
+  var year_map = [];
   for (; i >= 0 && resulting_data.length < x-1; i = i-2) {
     resulting_data.push({"label":years[i-1]+" - "+years[i], "value":(data_dict[years[i]] + data_dict[years[i-1]])});
+    year_map[years[i]] = years[i-1]+" - "+years[i];
+     year_map[years[i-1]] = years[i-1]+" - "+years[i];
+
   }
   var remains = 0;
   i--;
@@ -203,8 +221,13 @@ function keepLastX(data_dict, x) {
     remains += data_dict[years[i]];
   }
   if (resulting_data.length == x-1) {
-
     resulting_data.push({"label":remain_year + " & prior", "value":remains});
+  }
+  window.year_converter = function(year){
+    if(year<=remain_year) {
+      return remain_year + " & prior";
+    }
+    else return year_map[year];
   }
   return resulting_data;
 }
