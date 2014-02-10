@@ -52,6 +52,7 @@ window.addEventListener('load', function() {
 });
 
 var bubble = function(error, ufos) {
+  window.ufos = ufos;
   var locs = {};
   var bubbles = [];
   ufos.forEach(function(ufo) {
@@ -65,7 +66,7 @@ var bubble = function(error, ufos) {
     } else {
       locs[key] = bubbles.length;
       bubbles.push({
-        name: key,
+        name: ufo[1],
         latitude: ufo[0][0],
         longitude: ufo[0][1],
         count: 1

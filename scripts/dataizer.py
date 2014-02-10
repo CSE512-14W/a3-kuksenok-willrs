@@ -54,11 +54,11 @@ def metaDataize(coder, record):
   try:
     sighted = dateutil.parser.parse(record['sighted_at'])
     reported = dateutil.parser.parse(record['reported_at'])
-    shape = record['shape']
+    shape = record['shape'].strip()
     loc = coder.code(record['location'])
     datapos = len(data)
     data.append(record['description'])
-    return [loc, sighted, reported - sighted, shape, datapos]
+    return [loc, record['location'], sighted, (reported - sighted).total_seconds(), shape, datapos]
   except:
     return []
 
