@@ -39,10 +39,11 @@ Probably not going to get to the extra Missile launch feature...but maybe keep i
 ## Development Process
 
 - Katie did initial explorations of data dirtiness, and interesting phenomenon (the diary from 1910; distribution of lag; various NUFORC notes)
-- Will added geolocation data to records
+- Will added geolocation data to records, and wrote map interaction.
+- Katie built barchart and details rendering
 
 ### Data cleaning & access
 
-We both spent time figuring out in what ways data were dirty; which values were missing, and so on.
+We both spent time figuring out how to process data; which values were missing, and so on.
 
 The dataset of partial, often unconvincing UFO sightings is something that truly calls for constant closeness to the data. But even 60k records translaes into 80M of data, which is pushing it for a web application - especially if it's not necessary. In dataizer.py, we are doing data cleaning as well as splitting apart raw report text from the metadata, substantially reducing the amount of information we need to load at any given time.
