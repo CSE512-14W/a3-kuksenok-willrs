@@ -38,13 +38,13 @@ function cluster(ufos) {
 }
 
 d3.json("../data/ufo_metadata.json", function(error, data) {
-  window.bubbles = cluster(data);
+  var bub = cluster(data);
   d3.select("svg").append("g").selectAll("circle")
-  .data(window.bubbles).enter()
+  .data(bub).enter()
   .append("circle")
   .attr("class", "point")
-  .attr("cx", function(d) {return d.loc[0];})
-  .attr("cy", function(d) {return d.loc[1];})
+  .attr("cx", function(d) {return proj(d.loc)[0];})
+  .attr("cy", function(d) {return proj(d.loc)[1];})
   .attr("r", function(d) {return d.radius;});
 });
 
@@ -73,13 +73,14 @@ function drawMap(svg, path, mousePoint) {
 }
 
 var width = 500,
-    height = 500;
+    height = 500,
+    proj = orthographicProjection(width, height)
+          .scale(245)
+          .translate([width / 2, height * .56]);
     
 window.addEventListener('load', function() {
   d3.select("#map")
-  .data([orthographicProjection(width, height)
-          .scale(245)
-          .translate([width / 2, height * .56])])
+  .data([proj])
   .append("svg")
   .each(function(projection) {
     var path = d3.geo.path().projection(projection),
