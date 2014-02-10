@@ -50,6 +50,7 @@ def metaDataize(coder, record):
     reported = dateutil.parser.parse(record['reported_at'])
     shape = record['shape'].strip()
     # TODO(katiek): add duration converter
+    # TODO(katiek): add "missile launch"!
     loc = coder.code(record['location'])
     datapos = len(data)
     data.append(record['description'])
