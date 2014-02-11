@@ -4,8 +4,8 @@ window.example_set = [];
 function showRandomExample() {
   var randomIndex = window.example_set[Math.floor(Math.random() * window.example_set.length)];
   d3.json('data/descriptions/ufo_data_' +  1000*Math.floor(randomIndex/1000) + '.json', function(data) {
-    $("#example").fadeOut(function() {
-      $(this).html(data[randomIndex%1000])
+    $("#example-box").fadeOut(function() {
+      $("#example").html(data[randomIndex%1000])
     }).fadeIn();
   });
 }
@@ -63,6 +63,7 @@ var loadMetaData = function(error, ufos) {
 function loadUfos(ufo_subset) {
     window.example_set = [];
   if (ufo_subset.length == window.total) {
+    $("#example-box").css("display","none");
     renderBarChart("#shapes", window.total_shapes);
     renderBarChart("#years", window.total_years); 
     renderBarChart("#months", window.total_months); 
@@ -110,6 +111,7 @@ function loadUfos(ufo_subset) {
       renderBarChart("#months", window.total_months, month_subset);
       renderBarChart("#years", window.total_years, year_subset);
       showRandomExample();
+      $("#example-box").css("display","block");
       $("#headline").text("Showing " + kify(ufo_subset.length) + " of total " + kify(window.total));
       if (missiles>0) {
         $("#subhead").text("Of which "+kify(missiles)+ " can be associated with a missile launch.");

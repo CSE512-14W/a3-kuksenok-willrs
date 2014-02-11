@@ -33,10 +33,10 @@ body, html {
   float:left;
   padding:3px;
   font-size:10px;
-  color:#bbbbbb;
+  color:#dddddd;
 }
 #shapes {
-  height:250px;
+  height:210px;
 }
 #years, #months {
   height:130px;
@@ -61,19 +61,45 @@ body, html {
 }
 
 #example {
-  width:800px;
+  width:450px;
   color:#bbbbbb;
   padding:3px;
   float:left;
-  max-height: 300px;
+  max-height: 95px;
   overflow-y: scroll;
   white-space: pre-wrap;
+  font-style: courier;
+  font-size:14px;
 }
 
+#example-box {
+  width:450px;
+  float:left;
+}
+#example-box div{
+  color:#dd3333;
+  font-size:13px;
+  font-style: italic;
+  display:block;
+  padding:3px;
+  border-bottom:solid 2px #dd3333;
+}
+#example-box button{
+  color:white;
+  font-size:10px;
+  display:block;
+  background-color:#aa3333;
+  text-align: left;
+  border:none;
+}
+
+#example-box button:hover{
+  background-color:#dd3333;
+  }
 h1 {
   color:white;
   font-size: 20pt;
-  height:50px;
+  height:30px;
 }
 
 h2 {
@@ -83,7 +109,7 @@ h2 {
 }
 
 #vis-main {
-  width: 900px;
+  width: 1000px;
   margin: auto;
 }
 
@@ -107,11 +133,11 @@ h2 {
     <svg id="months"></svg>
     <div id="explain">Each of these bar charts whos the number of sightings associated with that UFO shape, year, or sighting month.<br/> Click, zoom, and pan around the map to explore UFO sightings aroudn the world.</div>
   </div>
-  <div id="example-box">
-    <h2>Don't believe this? How's this eyewitness account for evidence:</h2>
+  <div id="example-box" style="display:none">
+    <div>Don't believe it? How's this eyewitness account for evidence:</div>
     <pre id="example">
     </pre>
-    <button onclick="showRandomExample()">Still not convinced! Show me another random example from the geographic area I selected</button>
+    <button onclick="showRandomExample()">I'm still not convinced! Show me another random example from the geographic area I selected!</button>
   </div>
 </div>
 
