@@ -38,7 +38,7 @@ Transitioning from a single map to a map + summaries turned out to be a set of w
 
 Because the user very quickly gets to very few points through the map inut interaction, we played with some log transforms for the barcharts. However, those make mountains out of molehills constructed essentially with data dirtiness.
 
-We do not exmaple using the bar charts as input for highlighting the map. However, we maintained some closeness to the underlying data with the snarky "eyewitness account" viewer.
+We do not exmaple using the bar charts as input for highlighting the map. We also ran out of steam on cleaning the incredibly filthy field of duration (which has "2hr 1m", "5mins", "about a month", and all sorts of natural language in there). However, we maintained some closeness to the underlying data with the snarky "eyewitness account" viewer.
 
 ## Development Process
 
