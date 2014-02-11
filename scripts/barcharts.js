@@ -58,6 +58,8 @@ var loadMetaData = function(error, ufos) {
   }
   window.total_years = keepLastX(total_years_dict, 12);
   loadUfos(ufos);
+  $("#loading").fadeOut();
+  $("#vis-main").fadeIn();
 }
 
 function loadUfos(ufo_subset) {
