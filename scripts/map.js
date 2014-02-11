@@ -39,6 +39,7 @@ var popup = function(pos, bubble) {
   .style('display', 'block');
 };
 
+var getData = function() {
 d3.json("data/ufo_metadata.json", function(error, data) {
   var bub = cluster(data);
   d3.select("g.sightings").selectAll("circle")
@@ -63,6 +64,7 @@ d3.json("data/ufo_metadata.json", function(error, data) {
     window.requestAnimationFrame(loadUfos.bind({}, window.datum));
   });
 });
+}
 
 function projection(width, height) {
   return d3.geo.mercator()
@@ -151,6 +153,7 @@ window.addEventListener('load', function() {
             .attr("class", "mesh");
         loader.world();
       });
+      getData();
       
   d3.select("#map").append('div')
       .attr('class', 'popup')
