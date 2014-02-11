@@ -10,6 +10,16 @@ function showRandomExample() {
   });
 }
 
+function kify(number){
+  if(number>=1000){
+    return Math.round(number/1000) + "k";
+  }
+  if(number>=100) {
+    return "." + Math.round(number/100) + "k";
+  }
+  return number;
+}
+
 window.addEventListener('load', function() {
     queue().defer(d3.json, 'data/ufo_metadata.json').await(loadMetaData);
     queue().defer(d3.json, 'data/ufo_read_stats.json').await(loadReadStats);
@@ -37,7 +47,7 @@ var loadMetaData = function(error, ufos) {
     tally_shapes(ufo[4], total_shapes_dict);
     tally_time(ufo[2], total_years_dict, total_months_dict);
   });
-  window.total_shapes = keepTopX(total_shapes_dict, 12).sort(function(a, b) {
+  window.total_shapes = keepTopX(total_shapes_dict, 20).sort(function(a, b) {
       if(a.label < b.label) return -1;
       if(a.label > b.label) return 1;
       return 0;
@@ -56,8 +66,8 @@ function loadUfos(ufo_subset) {
     renderBarChart("#shapes", window.total_shapes);
     renderBarChart("#years", window.total_years); 
     renderBarChart("#months", window.total_months); 
-    $("#headline").text("There have been " + window.total + " UFO sightings to-date.");
-    $("#subhead").text("Of which "+ window.missiles +" contain a NUFORC note 'missile launch.'");
+    $("#headline").text(kify(window.total) + " UFO sightings to-date.");
+    $("#subhead").text("(Of which only "+ kify(window.missiles) +" can be associated with a missile launch)");
   } else {
       var missiles = 0;
       window.example_set = [];
@@ -100,12 +110,9 @@ function loadUfos(ufo_subset) {
       renderBarChart("#months", window.total_months, month_subset);
       renderBarChart("#years", window.total_years, year_subset);
       showRandomExample();
-      $("#headline").text("Showing " + ufo_subset.length + " of total " + window.total);
-      if (missiles>1) {
-        $("#subhead").text("Of which "+missiles+" has a NUFORC note 'missile launch.'");
-      }
-      else if (missiles==0) {
-        $("#subhead").text("Of which just one has a NUFORC note 'missile launch!'");
+      $("#headline").text("Showing " + kify(ufo_subset.length) + " of total " + kify(window.total));
+      if (missiles>0) {
+        $("#subhead").text("Of which "+kify(missiles)+ " can be associated with a missile launch.");
       }
       else {
         $("#subhead").text("The truth is out there.");
@@ -123,7 +130,7 @@ function renderBarChart(which, data, subset) {
       max = data[i].value;
     }
 
-    if(subset!=undefined) {
+    if (subset !=undefined) {
       data[i].subset_value = subset[data[i].label];
       if(data[i].subset_value>max) {
         subset_max = data[i].subset_value;
@@ -152,34 +159,34 @@ function renderBarChart(which, data, subset) {
   //Add elements to all the new bars
   newbars.append("rect")
       .classed('bar', true)
-      .attr("width",  function(d) { return x(transform(d.value)); })
+      .attr("width",  function(d) { return x(d.value); })
       .attr("height", barHeight - 1);
       
   newbars.append("rect")
         .classed('subset', true)
-        .attr("width",  function(d) { return x(transform(d.subset_value)); })
+        .attr("width",  function(d) { return x(d.subset_value); })
         .attr("height", barHeight - 1);
         
   newbars.append("text")
       .attr("x", 3)
       .attr("y", barHeight / 2)
       .attr("dy", ".35em")
-      .text(function(d, i) { return d.label + ": " + d.value; });
+    .text(function(d, i) { return d.label + ": " + (d.subset_value>0?(kify(d.subset_value)+" of "):"") + kify(d.value); })
   
   //Delete obsolete bars
   bind.exit().remove();
   
   //Update the existing bars
   bind.selectAll('rect.bar')
-    .attr("width",  function(d) { return x(transform(d.value)); })
+    .attr("width",  function(d) { return x(d.value); })
     .attr("height", barHeight - 1);
     
   bind.selectAll('rect.subset')
-    .attr("width",  function(d) { return x(transform(d.subset_value)); })
+    .attr("width",  function(d) { return x(d.subset_value); })
     .attr("height", barHeight - 1);
     
   bind.selectAll('text')
-    .text(function(d, i) { return d.label + ": " + d.value; })
+    .text(function(d, i) { return d.label + ": " + (d.subset_value>0?(kify(d.subset_value)+" of "):"") + kify(d.value); })
 }
 
 
