@@ -6,7 +6,9 @@ a3-kuksenok-willrs
 1. Katie Kuksenok kuksenok@uw.edu
 2. Will Scott willrs@uw.edu
 
-## Itneractive UFO visualization
+## Interactive UFO visualization
+
+[![Screenshot](rsrcs/screenshot.png)](http://cse512-14w.github.io/a3-kuksenok-willrs/)
 
 Aimed at novice users, this interactive visualization enables answering the questions: "what's the most interesting UFO activity happening in my area? Can I trust it?"
 
