@@ -22,7 +22,7 @@ Access our visualization at http://cse512-14w.github.io/a3-kuksenok-willrs/ or d
 
 ## Story Board
 
-[sketch goes here]
+![Storyboard](sketch1.png)
 
 - When the user first opens the application, she sees a world map. This map
 
