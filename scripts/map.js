@@ -1,15 +1,5 @@
 var loader = d3.dispatch("world");
 
-d3.json("data/world-110m.json", function(error, world) {
-  d3.select("#map").selectAll("svg").insert("path", ".foreground")
-      .datum(topojson.feature(world, world.objects.land))
-      .attr("class", "land");
-  d3.select("#map").selectAll("svg").insert("path", ".foreground")
-      .datum(topojson.mesh(world, world.objects.countries))
-      .attr("class", "mesh");
-  loader.world();
-});
-
 function cluster(ufos) {
   var locs = {};
   var bubbles = [];
@@ -152,6 +142,16 @@ window.addEventListener('load', function() {
         loader.on("world.0", function() { svg.selectAll("path").attr("d", path); });
       });
 
+      d3.json("data/world-110m.json", function(error, world) {
+        d3.select("#map").selectAll("svg").insert("path", ".foreground")
+            .datum(topojson.feature(world, world.objects.land))
+            .attr("class", "land");
+        d3.select("#map").selectAll("svg").insert("path", ".foreground")
+            .datum(topojson.mesh(world, world.objects.countries))
+            .attr("class", "mesh");
+        loader.world();
+      });
+      
   d3.select("#map").append('div')
       .attr('class', 'popup')
       .style('z-index', 10001)
