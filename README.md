@@ -22,31 +22,31 @@ Access our visualization at http://cse512-14w.github.io/a3-kuksenok-willrs/ or d
 
 ![Storyboard](sketch1.png)
 
-- When the user first opens the application, she sees a world map. This map
+- When the user first opens the application, she sees a world map, which can be lassoed to select a subsets of points. This is shown in the companion zommedin map.
 
 - We show summary histograms that might be interesting: by shape; by year; by month. Selecting a bar shows a subset of the points - not all, because not all points with shape X have location data, or vice versa. In this sense, there is brushing and linking interaction, but we tried as unobtrusively as possible to get around the incompleteness of the metadata
 
-- We further enable people to dill down to individual data points by clicking on the map. Alternatively, whichever the current "selection" of points is, the corresponding full reports are randomly cycled through on a timer.
+- We further enable people to drill down to individual data points by clicking on the map. Alternatively, whichever the current "selection" of points is, the corresponding full reports are randomly cycled through on a timer.
 
 ### Changes between Storyboard and the Final Implementation
 
-When processing the data we noticed that many of the textual descriptions included notes about nearby missle launches.  We decided that was too cool to ignore, so we mark that statistic.
+When processing the data we noticed that many of the textual descriptions included notes about nearby missle launches.  We decided that was too cool to ignore, so we mark that statistic inthe heading.
 
-Figuring out the 'best bar chart' for a subset of data turned out to be difficult, so we show a static set of bar charts on the different types of data breakdown that we had been considering in the story board.
+Figuring out the 'best bar chart' for a subset of data turned out to be difficult, so we show a static set of bar charts on the different types of data breakdown that we had been considering in the story board. We always show the overall distribution - which has a cool "summer peak" and provides a sence for the history of the data.
 
-Transitioning from a single map to a map + summaries turned out to be a set of weird user interactions compared to showing the detailed view at all times, but allowing the summaries to reflect pans and zooms to the map.
+Transitioning from a single map to a map + summaries turned out to be a set of weird user interactions compared to showing the detailed view at all times, so we went with allowing the summaries to reflect pans and zooms to the map.
+
+Because the user very quickly gets to very few points through the map inut interaction, we played with some log transforms for the barcharts. However, those make mountains out of molehills constructed essentially with data dirtiness.
+
+We do not exmaple using the bar charts as input for highlighting the map. However, we maintained some closeness to the underlying data with the snarky "eyewitness account" viewer.
 
 ## Development Process
 
 - Katie did initial explorations of data dirtiness, and interesting phenomenon (the diary from 1910; distribution of lag; various NUFORC notes)
 - Will added geolocation data to records, and wrote map interaction.
-- Katie built barchart and details rendering
+- Katie built barchart and details rendering, including the example viewer
 
 ### Data cleaning & access
 
-We both spent time figuring out how to process data; which values were missing, and so on.
-
-The dataset of partial, often unconvincing UFO sightings is something that truly calls for constant closeness to the data. But even 60k records translaes into 80M of data, which is pushing it for a web application - especially if it's not necessary. In dataizer.py, we are doing data cleaning as well as splitting apart raw report text from the metadata, substantially reducing the amount of information we need to load at any given time.
-
-Some of the geolocations are off, like "unknown, IL" showing up over africa. in general the geolocation was surprising accurate, though.
+We both spent time figuring out how to process data; which values were missing, and so on. The dataset of partial, often unconvincing UFO sightings is something that truly calls for constant closeness to the data. But even 60k records translaes into 80M of data, which is pushing it for a web application - especially if it's not necessary. In dataizer.py, we are doing data cleaning as well as splitting apart raw report text from the metadata, substantially reducing the amount of information we need to load at any given time. Some of the geolocations are off, like "unknown, IL" showing up over africa. in general the geolocation was surprising accurate, though.
 
