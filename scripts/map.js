@@ -40,10 +40,12 @@ function cluster(ufos) {
 }
 
 var popup = function(pos, bubble) {
+  var x = d3.select('#map svg')[0][0].offsetLeft;
+  var y = d3.select('#map svg')[0][0].offsetTop;
   d3.select('.popup')
-  .style('top', (pos[1] + 30) + "px")
+  .style('top', (y + pos[1] + 30) + "px")
   .html("<div class='hoverinfo'><b>" + bubble.name + "</b></div>")
-  .style('left', (pos[0]) + "px")
+  .style('left', (x + pos[0]) + "px")
   .style('display', 'block');
 };
 
